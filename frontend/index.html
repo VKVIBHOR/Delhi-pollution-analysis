@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Delhi Pollution Policy Simulator - Analyze and compare air pollution control strategies">
+    <title>Delhi Pollution Policy Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🌫️</span>
+                    <div class="logo-text">
+                        <h1>Delhi Pollution Policy Simulator</h1>
+                        <p class="tagline">Which interventions actually work?</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-section="simulator">Simulator</button>
+                    <button class="nav-btn" data-section="forecast">🤖 Forecast</button>
+                    <button class="nav-btn" data-section="comparison">Compare</button>
+                    <button class="nav-btn" data-section="rankings">Rankings</button>
+                    <button class="nav-btn" data-section="water-analysis">Water Analysis</button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Simulator Section -->
+            <section id="simulator" class="section active">
+                <div class="section-grid">
+                    <!-- Controls Panel -->
+                    <div class="panel controls-panel">
+                        <h2 class="panel-title">
+                            <span class="panel-icon">⚙️</span>
+                            Simulation Controls
+                        </h2>
+
+                        <!-- Scenario Selector -->
+                        <div class="control-group">
+                            <label class="control-label">Pre-defined Scenario</label>
+                            <select id="scenario-select" class="select-input">
+                                <option value="">-- Custom Selection --</option>
+                            </select>
+                        </div>
+
+                        <!-- Policy Categories -->
+                        <div class="control-group">
+                            <label class="control-label">Or Select Policies</label>
+
+                            <div class="policy-category">
+                                <h4 class="category-title delhi">Delhi Government Measures</h4>
+                                <div id="delhi-policies" class="policy-list"></div>
+                            </div>
+
+                            <div class="policy-category">
+                                <h4 class="category-title global">Global Best Practices</h4>
+                                <div id="global-policies" class="policy-list"></div>
+                            </div>
+
+                            <div class="policy-category">
+                                <h4 class="category-title experimental">Experimental Strategies</h4>
+                                <div id="experimental-policies" class="policy-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- Weather Selector -->
+                        <div class="control-group">
+                            <label class="control-label">Weather Conditions</label>
+                            <select id="weather-select" class="select-input">
+                                <option value="default">Default (Typical Winter)</option>
+                                <option value="stagnant">Stagnant (Worst Case)</option>
+                                <option value="favorable">Favorable (Best Case)</option>
+                                <option value="realistic">Realistic (Variable)</option>
+                            </select>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="control-group">
+                            <label class="control-label">Duration (Days)</label>
+                            <input type="range" id="duration-slider" min="7" max="60" value="30" class="slider-input">
+                            <span id="duration-value" class="slider-value">30 days</span>
+                        </div>
+
+                        <!-- Run Button -->
+                        <button id="run-simulation" class="btn btn-primary btn-large">
+                            <span class="btn-icon">▶️</span>
+                            Run Simulation
+                        </button>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="panel results-panel">
+                        <h2 class="panel-title">
+                            <span class="panel-icon">📊</span>
+                            Simulation Results
+                        </h2>
+
+                        <!-- Stats Cards -->
+                        <div class="stats-grid" id="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-label">Average PM2.5</span>
+                                <span class="stat-value" id="stat-pm25">--</span>
+                                <span class="stat-unit">µg/m³</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Average PM10</span>
+                                <span class="stat-value" id="stat-pm10">--</span>
+                                <span class="stat-unit">µg/m³</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Severe Hours</span>
+                                <span class="stat-value" id="stat-severe">--</span>
+                                <span class="stat-unit">hours</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Good Hours</span>
+                                <span class="stat-value" id="stat-good">--</span>
+                                <span class="stat-unit">hours</span>
+                            </div>
+                        </div>
+
+                        <!-- Chart -->
+                        <div class="chart-container">
+                            <canvas id="pollution-chart"></canvas>
+                        </div>
+
+                        <!-- Insights -->
+                        <div class="insights-container" id="insights-container">
+                            <h3 class="insights-title">💡 Key Insights</h3>
+                            <div id="insights-list" class="insights-list">
+                                <p class="placeholder-text">Run a simulation to see insights</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Forecast Section (ML) -->
+            <section id="forecast" class="section">
+                <div class="section-grid">
+                    <!-- Input Panel -->
+                    <div class="panel controls-panel">
+                        <h2 class="panel-title">
+                            <span class="panel-icon">🤖</span>
+                            ML-Powered Forecast
+                        </h2>
+
+                        <div class="ml-badge">
+                            <span>Random Forest Model</span>
+                            <span class="ml-status" id="ml-status">●</span>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Current PM2.5 (µg/m³)</label>
+                            <input type="number" id="forecast-pm25" class="number-input" value="150" min="0" max="500">
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Current PM10 (µg/m³)</label>
+                            <input type="number" id="forecast-pm10" class="number-input" value="300" min="0" max="800">
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Wind Speed (km/h)</label>
+                            <input type="range" id="forecast-wind" min="1" max="25" value="8" class="slider-input">
+                            <span id="wind-value" class="slider-value">8 km/h</span>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Temperature (°C)</label>
+                            <input type="range" id="forecast-temp" min="5" max="40" value="20" class="slider-input">
+                            <span id="temp-value" class="slider-value">20°C</span>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Humidity (%)</label>
+                            <input type="range" id="forecast-humidity" min="30" max="95" value="60"
+                                class="slider-input">
+                            <span id="humidity-value" class="slider-value">60%</span>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">
+                                <input type="checkbox" id="forecast-inversion">
+                                Temperature Inversion (traps pollution)
+                            </label>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Active Policies</label>
+                            <div class="policy-checkboxes">
+                                <label><input type="checkbox" value="water_spraying"> Water Spraying</label>
+                                <label><input type="checkbox" value="odd_even"> Odd-Even</label>
+                                <label><input type="checkbox" value="construction_ban"> Construction Ban</label>
+                                <label><input type="checkbox" value="grap_stage_1"> GRAP</label>
+                                <label><input type="checkbox" value="congestion_pricing"> Congestion Pricing</label>
+                                <label><input type="checkbox" value="source_elimination"> Source Elimination</label>
+                            </div>
+                        </div>
+
+                        <button id="run-forecast" class="btn btn-primary btn-large">
+                            <span class="btn-icon">🔮</span>
+                            Predict Next-Day AQI
+                        </button>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="panel results-panel">
+                        <h2 class="panel-title">
+                            <span class="panel-icon">📈</span>
+                            Prediction Results
+                        </h2>
+
+                        <div class="forecast-result" id="forecast-result">
+                            <div class="forecast-main">
+                                <div class="forecast-prediction">
+                                    <span class="forecast-label">Predicted PM2.5</span>
+                                    <span class="forecast-value" id="predicted-pm25">--</span>
+                                    <span class="forecast-unit">µg/m³</span>
+                                </div>
+                                <div class="forecast-category" id="forecast-category">
+                                    <span>AQI Category</span>
+                                    <span class="category-badge" id="category-badge">--</span>
+                                </div>
+                                <div class="forecast-confidence">
+                                    <span>Confidence</span>
+                                    <span class="confidence-value" id="confidence-value">--%</span>
+                                </div>
+                            </div>
+
+                            <div class="forecast-recommendation" id="forecast-recommendation">
+                                <h4>📋 Recommendation</h4>
+                                <p id="recommendation-text">Run a prediction to see recommendations</p>
+                            </div>
+
+                            <div class="feature-importance" id="feature-importance">
+                                <h4>🎯 Feature Importance</h4>
+                                <div class="importance-bars" id="importance-bars">
+                                    <p class="placeholder-text">Run a prediction to see feature importance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison Section -->
+            <section id="comparison" class="section">
+                <div class="panel comparison-panel">
+                    <h2 class="panel-title">
+                        <span class="panel-icon">⚖️</span>
+                        Scenario Comparison
+                    </h2>
+
+                    <div class="comparison-controls">
+                        <div class="scenario-checkboxes" id="comparison-scenarios">
+                            <!-- Will be populated by JS -->
+                        </div>
+                        <button id="run-comparison" class="btn btn-primary">
+                            Compare Selected Scenarios
+                        </button>
+                    </div>
+
+                    <div class="comparison-results" id="comparison-results">
+                        <!-- Comparison Chart -->
+                        <div class="chart-container">
+                            <canvas id="comparison-chart"></canvas>
+                        </div>
+
+                        <!-- Comparison Table -->
+                        <div class="comparison-table-container">
+                            <table class="comparison-table" id="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Scenario</th>
+                                        <th>PM2.5 Mean</th>
+                                        <th>PM2.5 Reduction</th>
+                                        <th>Severe Hours</th>
+                                        <th>Good Hours</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Comparison Insights -->
+                        <div class="insights-container">
+                            <h3 class="insights-title">💡 Comparison Insights</h3>
+                            <div id="comparison-insights" class="insights-list">
+                                <p class="placeholder-text">Run a comparison to see insights</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Rankings Section -->
+            <section id="rankings" class="section">
+                <div class="panel rankings-panel">
+                    <h2 class="panel-title">
+                        <span class="panel-icon">🏆</span>
+                        Policy Rankings
+                    </h2>
+
+                    <!-- Comparison Matrix -->
+                    <div class="matrix-container">
+                        <h3 class="matrix-title">Policy Effectiveness Matrix</h3>
+                        <table class="matrix-table" id="matrix-table">
+                            <thead>
+                                <tr>
+                                    <th>Measure</th>
+                                    <th>Delhi Uses</th>
+                                    <th>Global Uses</th>
+                                    <th>Effectiveness</th>
+                                    <th>Why</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matrix-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Overall Rankings -->
+                    <div class="rankings-container">
+                        <h3 class="rankings-title">Overall Policy Rankings</h3>
+                        <div class="rankings-list" id="rankings-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Top Recommendations -->
+                    <div class="recommendations-container">
+                        <h3 class="recommendations-title">🎯 Top Recommendations</h3>
+                        <div class="recommendations-list" id="recommendations-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Water Analysis Section -->
+            <section id="water-analysis" class="section">
+                <div class="panel water-panel">
+                    <h2 class="panel-title">
+                        <span class="panel-icon">💧</span>
+                        Water Spraying: Deep Analysis
+                    </h2>
+
+                    <!-- Key Metric -->
+                    <div class="water-hero">
+                        <div class="water-metric">
+                            <span class="metric-value" id="water-equivalence">30</span>
+                            <span class="metric-label">Days of water spraying</span>
+                        </div>
+                        <div class="water-equals">=</div>
+                        <div class="water-metric">
+                            <span class="metric-value">1</span>
+                            <span class="metric-label">Day of truck ban</span>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Sections -->
+                    <div class="water-sections" id="water-sections">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Key Insight -->
+                    <div class="key-insight-box" id="water-key-insight">
+                        <h3>🔑 Key Insight</h3>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Delhi Pollution Policy Simulator • Causal understanding through simulation</p>
+            <p class="footer-note">Data is synthetic for fair policy comparison • Not for regulatory use</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
