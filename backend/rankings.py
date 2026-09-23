@@ -153,7 +153,7 @@ class PolicyRanker:
             },
             {
                 "measure": "Predictive Triggers",
-                "delhi_uses": "❌ No",
+                "delhi_uses": "🟡 Partial (forecast-based GRAP since 2024)",
                 "global_uses": "✅ Yes",
                 "effectiveness": "🟢 High",
                 "why": "Proactive, prevents buildup"

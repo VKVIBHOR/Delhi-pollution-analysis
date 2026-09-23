@@ -21,7 +21,7 @@ class SourceEliminationPolicy(BasePolicy):
     Source Elimination
     
     Strategy: Relocate or close polluting industries
-    - Highest effectiveness (40-60% reduction)
+    - Largest assumed effect in the model (45-50% cut in affected emissions)
     - Permanent solution
     - High implementation cost and time
     - Proven in Beijing, London (post-industrial transition)

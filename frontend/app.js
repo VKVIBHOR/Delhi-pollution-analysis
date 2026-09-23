@@ -513,11 +513,9 @@ function renderRankings(data) {
 function renderWaterAnalysis(data) {
     if (!data.success) return;
 
-    // Update equivalence number
-    const match = data.analysis.equivalence.match(/(\d+)/);
-    if (match) {
-        document.getElementById('water-equivalence').textContent = match[1];
-    }
+    // Simulated PM2.5 reductions vs the no-intervention baseline
+    document.getElementById('water-pct').textContent = `${data.analysis.water_pm25_reduction_pct}%`;
+    document.getElementById('source-pct').textContent = `${data.analysis.source_based_pm25_reduction_pct}%`;
 
     // Render sections
     const sectionsContainer = document.getElementById('water-sections');

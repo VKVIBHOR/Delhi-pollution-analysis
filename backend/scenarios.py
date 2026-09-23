@@ -85,7 +85,7 @@ SCENARIOS = {
     "delhi_current": Scenario(
         name="delhi_current",
         display_name="Current Delhi Approach",
-        description="Simulates Delhi's current strategy: water spraying 3x daily, "
+        description="Simulates Delhi's current strategy: daily water spraying (one 4-hour session), "
                    "odd-even during peak hours, GRAP stage 2 when AQI exceeds thresholds.",
         weather_type="default",
         policies=["water_spraying", "odd_even", "grap_stage2"],

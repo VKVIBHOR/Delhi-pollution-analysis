@@ -234,7 +234,7 @@ POLICY_COMPARISON = {
         "rating": 5,
     },
     "predictive_triggers": {
-        "delhi_uses": False,
+        "delhi_uses": "partial",  # GRAP forecast-based invocation since Dec 2024
         "global_uses": True,
         "effectiveness": "high",
         "rating": 5,

@@ -95,9 +95,8 @@ class InsightsGenerator:
         if any(c["scenario"] == "water_spraying_only" for c in comparisons):
             water = next(c for c in comparisons if c["scenario"] == "water_spraying_only")
             insights.append(
-                f"**Water spraying reality**: Only {water['pm25_reduction_pct']:.1f}% reduction over 30 days. "
-                f"Effect decays within hours while emission sources continue. "
-                f"30 days of water spraying ≈ 1 day of truck ban in net impact."
+                f"**Water spraying reality**: Only {water['pm25_reduction_pct']:.1f}% PM2.5 reduction over 30 days. "
+                f"The effect decays within hours while emission sources continue."
             )
         
         return insights
@@ -132,30 +131,36 @@ class InsightsGenerator:
                 },
                 {
                     "heading": "The Numbers",
-                    "content": "Initial PM10 reduction: 15%. Initial PM2.5 reduction: 5% (particles too fine). "
-                              "After 4 hours: <2% residual effect. After 8 hours: Pollution back to baseline."
+                    "content": "Model assumptions: 15% initial PM10 reduction and 5% initial PM2.5 reduction "
+                              "(fine particles are harder to wash out), decaying over about 4 hours. "
+                              "Simulated over 30 days of daily spraying, average PM10 falls by about 11% "
+                              "and PM2.5 by about 4%."
                 },
                 {
                     "heading": "The Comparison",
-                    "content": "30 days of 3x daily water spraying = 1 day of banning diesel trucks. "
-                              "Water used: 150,000 liters/day. Cost: ~₹45,000/day. "
-                              "Net PM2.5 improvement: ~2-3%."
+                    "content": "Under identical weather, packages that cut emissions at source "
+                              "(industry controls, pricing, low-emission zones, regional coordination) "
+                              "reduce simulated average PM2.5 by roughly 27-32%, several times more than "
+                              "spraying alone. Real-world evidence is also limited: a 2025 CEEW review "
+                              "found little evidence that anti-smog guns work at scale."
                 },
                 {
                     "heading": "Why It Persists",
-                    "content": "Water spraying is visible, immediate, and creates a perception of action. "
-                              "It's politically convenient - shows 'something is being done' without "
-                              "addressing difficult structural issues like vehicle emissions or industry."
+                    "content": "Water spraying is visible and immediate, so it signals action quickly. "
+                              "Around 68% of National Clean Air Programme funds have gone to road-dust "
+                              "management (CREA, 2026), compared with much smaller shares for transport "
+                              "and industry."
                 },
                 {
                     "heading": "What Would Work Instead",
-                    "content": "Same resources spent on: (1) Subsidizing electric vehicles, "
-                              "(2) Industrial emission controls, (3) Regional crop burning solutions. "
-                              "Each would provide 10-50x more pollution reduction per rupee spent."
+                    "content": "Shift resources toward measures that reduce emissions at source: "
+                              "(1) clean public transport and vehicle electrification, "
+                              "(2) industrial emission controls, (3) region-wide action on crop and "
+                              "biomass burning. Evaluate any dust measure with before-and-after monitoring."
                 }
             ],
-            "key_insight": "Water spraying is a cosmetic measure that addresses symptoms, not causes. "
-                          "It creates temporary relief while avoiding the harder work of emission reduction."
+            "key_insight": "Water spraying treats pollution already in the air, not what produces it. "
+                          "It gives short-lived relief; lasting gains come from cutting emissions at source."
         }
     
     def generate_full_report(
@@ -202,12 +207,12 @@ class InsightsGenerator:
             "scenario_insights": scenario_insights,
             "water_spraying_analysis": water_analysis,
             "key_conclusions": [
-                "Delhi's current measures (water spraying, odd-even) provide <15% improvement",
-                "Global best practices (source elimination, pricing) achieve 40-60% reduction",
-                "Water spraying is cosmetic - 30 days ≈ 1 day of truck ban",
-                "Targeting top 20% of emitters outperforms blanket bans",
-                "Predictive triggering is more effective than reactive GRAP",
-                "Regional coordination is essential - 30-40% of pollution comes from outside Delhi"
+                "Delhi's current mix (daily spraying, odd-even, GRAP Stage II) lowers simulated 30-day average PM2.5 by about 15%",
+                "Source-based packages (industry controls, pricing, regional coordination) lower it by about 27-32%",
+                "Daily water spraying alone lowers PM2.5 by about 4% (PM10 by about 11%); the effect fades within hours",
+                "Weather can outweigh policy: under stagnant conditions, even GRAP IV plus a construction ban leaves PM2.5 far above the normal-weather baseline",
+                "Acting on forecasts before smog builds matters; Delhi's GRAP has allowed forecast-based invocation since its 2024 revision",
+                "All results depend on assumed effect sizes and are relative, not calibrated forecasts (see README: Limitations)"
             ]
         }
 

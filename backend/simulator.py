@@ -214,34 +214,45 @@ class Simulator:
 
 def run_water_spraying_analysis() -> Dict:
     """
-    Special analysis demonstrating water spraying ineffectiveness.
-    
-    Returns:
-        Detailed comparison data
+    Compare daily water spraying with other measures under identical weather.
+
+    Every figure here comes from actually simulating each scenario; nothing is
+    assumed or extrapolated. Results are relative to the no-intervention baseline
+    and depend on the effect sizes set in config.py (see README: Limitations).
     """
     simulator = Simulator()
-    
-    # Run baseline and water spraying scenarios
     baseline = simulator.run_scenario("baseline")
     water = simulator.run_scenario("water_spraying_only")
-    
-    # Calculate the equivalence
-    # How many days of water spraying = 1 day of truck ban?
-    water_pm25_daily_reduction = (baseline.stats["pm25"]["mean"] - water.stats["pm25"]["mean"]) / 30
-    
-    # Estimate truck ban effect (from night_truck_ban policy)
-    truck_ban_daily_reduction = baseline.stats["pm25"]["mean"] * 0.18  # 18% reduction
-    
-    equivalence_ratio = truck_ban_daily_reduction / max(water_pm25_daily_reduction, 0.1)
-    
+    source_based = simulator.run_scenario("global_best")
+
+    def pct(result, pollutant):
+        base = baseline.stats[pollutant]["mean"]
+        return round((base - result.stats[pollutant]["mean"]) / base * 100, 1)
+
+    # Night truck ban simulated on its own, so it is compared like-for-like
+    truck_scenario = Scenario(
+        name="night_truck_ban_only",
+        display_name="Night Truck Ban Only",
+        description="Night truck ban (10 PM - 6 AM) with no other measures.",
+        weather_type="default",
+        policies=["night_truck_ban"],
+        policy_schedules={"night_truck_ban": {"start_hour": 22, "repeat_daily": True, "duration_hours": 8}},
+    )
+    engine = create_engine()
+    engine.run_simulation(truck_scenario.get_weather_sequence(), truck_scenario.get_policy_schedule())
+    truck = SimulationResult("night_truck_ban_only", engine.history, engine.get_summary_stats())
+
     return {
         "baseline_pm25_mean": round(baseline.stats["pm25"]["mean"], 2),
         "water_spraying_pm25_mean": round(water.stats["pm25"]["mean"], 2),
-        "daily_pm25_reduction": round(water_pm25_daily_reduction, 2),
-        "truck_ban_daily_reduction": round(truck_ban_daily_reduction, 2),
-        "equivalence": f"{int(equivalence_ratio)} days of water spraying ≈ 1 day of truck ban",
-        "conclusion": "Water spraying provides minimal sustained benefit. The effect decays within hours "
-                     "while emission sources continue unabated, causing rapid rebound.",
+        "water_pm25_reduction_pct": pct(water, "pm25"),
+        "water_pm10_reduction_pct": pct(water, "pm10"),
+        "source_based_pm25_reduction_pct": pct(source_based, "pm25"),
+        "night_truck_ban_pm25_reduction_pct": pct(truck, "pm25"),
+        "conclusion": "In this model, daily water spraying gives a short-lived dip that fades within hours, "
+                     "so its 30-day effect on PM2.5 is small. Packages that cut emissions at source "
+                     "reduce average PM2.5 several times more. Results are relative and depend on the "
+                     "assumed effect sizes; the model is not calibrated to monitoring data.",
     }
 
 

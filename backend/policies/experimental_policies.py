@@ -231,7 +231,7 @@ class PredictiveTriggeringPolicy(BasePolicy):
     Strategy: Act 3-5 days before predicted smog episodes
     - Use weather forecasts to predict inversions
     - Pre-emptive restrictions before pollution builds
-    - More effective than reactive GRAP
+    - A stronger, fully pre-emptive version of forecast-based GRAP
     """
     
     def get_metadata(self) -> PolicyMetadata:
@@ -240,7 +240,8 @@ class PredictiveTriggeringPolicy(BasePolicy):
             display_name="Predictive Triggering",
             description="Use weather forecasts to predict smog episodes 3-5 days ahead. "
                        "Activate restrictions BEFORE pollution builds up, not after. "
-                       "Much more effective than reactive GRAP.",
+                       "Delhi's GRAP has allowed forecast-based invocation since 2024; this models "
+                       "a stronger, fully pre-emptive version.",
             category="experimental",
             sources_affected=["vehicles", "construction", "industry"],
             cost_level="low",

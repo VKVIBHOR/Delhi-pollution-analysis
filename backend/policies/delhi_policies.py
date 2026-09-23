@@ -70,8 +70,8 @@ class WaterSprayingPolicy(BasePolicy):
             "Water spraying causes a temporary 10-15% dip in PM10 readings, "
             "but the effect decays within 4 hours. PM2.5 (the more harmful pollutant) "
             "sees only 5% reduction. Meanwhile, emission sources continue unchanged, "
-            "causing rapid rebound. Analysis shows: 30 days of water spraying ≈ "
-            "1 day of banning diesel trucks in terms of net pollution reduction."
+            "causing rapid rebound. In the 30-day simulation, daily spraying lowers "
+            "average PM2.5 by only about 4%."
         )
 
 
@@ -186,7 +186,8 @@ class GRAPPolicy(BasePolicy):
     - Stage 3 (Severe): Vehicle restrictions
     - Stage 4 (Emergency): School closures, WFH
     
-    Reactive rather than proactive - acts after pollution rises
+    Triggered by observed AQI and, since the December 2024 revision, by IMD/IITM
+    forecasts. Modelled here as a fixed-duration package of measures.
     """
     
     def __init__(self, stage: int = 1):
@@ -197,7 +198,7 @@ class GRAPPolicy(BasePolicy):
             name=f"grap_stage{self.stage}",
             display_name=f"GRAP Stage {self.stage}",
             description=f"Graded Response Action Plan Stage {self.stage}. "
-                       f"Reactive emergency measures triggered by AQI thresholds. "
+                       f"Emergency measures triggered by AQI thresholds and (since 2024) by forecasts. "
                        f"Actions: {', '.join(GRAP[f'stage{self.stage}']['actions'])}",
             category="delhi",
             sources_affected=["vehicles", "construction", "industry"],
